@@ -1,0 +1,19 @@
+name: attest
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+permissions:
+  id-token: write
+  contents: read
+  attestations: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: produce artifact
+        run: cat marker.txt > artifact.txt && sha256sum artifact.txt
+      - uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be
+        with:
+          subject-path: artifact.txt
